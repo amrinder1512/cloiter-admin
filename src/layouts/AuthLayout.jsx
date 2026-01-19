@@ -7,7 +7,7 @@ import { checkAuth } from "../store/slices/user";
 
 const AuthLayout = () => {
   const dispatch = useDispatch();
-  const { logos } = useSelector((state) => state.settings);
+  // const { logos } = useSelector((state) => state.settings);
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
@@ -19,9 +19,9 @@ const AuthLayout = () => {
         <figure className="h-full">
           <div className="bg-[#434242] w-full h-full flex items-center justify-center">
             <img
-              src={`${IMAGE_URL}${logos?.logoDark}`}
+              src={"/images/logo.png"}
               alt="Cloiter"
-              className="w-80 h-18 text-white"
+              className="w-60  h-22 text-white"
             />
           </div>
         </figure>

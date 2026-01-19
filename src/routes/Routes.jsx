@@ -4,6 +4,7 @@ import { Route, Routes as RouteWrapper, useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
 import Layout from "../layouts/Layout";
 import { ROUTES } from "../consts/routes";
+import LoginForm from "../components/LoginForm";
 import { useSelector } from "react-redux";
 import Settings from "../pages/settings/Settings";
 import Faq from "../pages/helpcenter/Faq";
@@ -31,13 +32,13 @@ const Routes = () => {
     }
 
     if (token && window.location.pathname === "/login") {
-      navigate("/dashboard", { replace: true });
+      navigate("/homepage", { replace: true });
     }
   }, [token, navigate]);
 
   useEffect(() => {
     if (token && window.location.pathname === "/") {
-      navigate("/dashboard");
+      navigate("/homepage");
     }
   }, [token, navigate]);
   return (
@@ -57,6 +58,7 @@ const Routes = () => {
         <Route path={ROUTES.SERVICES_VIEW} element={<ServiceDetailPage />} />
         <Route path={ROUTES.SERVICES_EDIT} element={<ServiceFormPage />} />
 
+        <Route path={ROUTES.LOGIN} element={<LoginForm />} />
         <Route path={ROUTES.FOOTER} element={<FooterListPage />} />
         <Route path={ROUTES.FOOTER_CREATE} element={<CreateFooterItemPage />} />
         <Route
