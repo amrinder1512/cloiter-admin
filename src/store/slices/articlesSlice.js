@@ -4,9 +4,10 @@ import axios from "../../services/axios";
 // --- Articles Thunks ---
 export const getArticles = createAsyncThunk(
     "articles/getArticles",
-    async (_, { rejectWithValue }) => {
+    async ({ search = '' } = {}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/article`);
+            const query = search ? `?search=${search}` : '';
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/article${query}`);
             return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");

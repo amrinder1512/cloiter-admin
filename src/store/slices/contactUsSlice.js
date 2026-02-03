@@ -28,9 +28,9 @@ export const updateContactUsPage = createAsyncThunk(
 
 export const getContactLogs = createAsyncThunk(
     "contact/getContactLogs",
-    async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+    async ({ page = 1, limit = 10, search = '' } = {}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/contact-us?page=${page}&limit=${limit}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/contact-us?page=${page}&limit=${limit}&search=${search}`);
             // If response has items (pagination), return full object
             if (response.items) {
                 return response;

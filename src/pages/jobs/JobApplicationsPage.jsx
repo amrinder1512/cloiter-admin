@@ -1,27 +1,44 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getJobApplications } from "../../store/slices/jobsSlice";
-import { Mail, Phone, MapPin, Briefcase, FileText } from "lucide-react";
+import { Mail, Phone, MapPin, Briefcase, FileText, Search } from "lucide-react";
 
 const JobApplicationsPage = () => {
     const dispatch = useDispatch();
     const { applications, loading, pagination } = useSelector((state) => state.jobs);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        dispatch(getJobApplications({ page: 1 }));
-    }, [dispatch]);
+        const delayDebounceFn = setTimeout(() => {
+            dispatch(getJobApplications({ page: 1, search: searchTerm }));
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm, dispatch]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= pagination.totalPages) {
-            dispatch(getJobApplications({ page: newPage }));
+            dispatch(getJobApplications({ page: newPage, search: searchTerm }));
         }
     };
 
     return (
         <div className="p-6">
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-slate-900">Job Applications</h1>
-                <p className="text-slate-500">View and manage all candidates who applied for jobs.</p>
+            <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Job Applications</h1>
+                    <p className="text-slate-500">View and manage all candidates who applied for jobs.</p>
+                </div>
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                    <input
+                        type="text"
+                        placeholder="Search applications..."
+                        className="pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900/10 w-full md:w-64"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -34,7 +51,7 @@ const JobApplicationsPage = () => {
                                 <th className="px-6 py-4">Contact Info</th>
                                 <th className="px-6 py-4">Resume</th>
                                 <th className="px-6 py-4">Applied Date</th>
-                                <th className="px-6 py-4">Status</th>
+                                {/* <th className="px-6 py-4">Status</th> */}
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -80,7 +97,7 @@ const JobApplicationsPage = () => {
                                         <td className="px-6 py-4">
                                             {app.resume ? (
                                                 <a
-                                                    href={`${import.meta.env.VITE_IMAGE_URL || ''}/${app.resume.replace(/\\/g, '/')}`}
+                                                    href={`${import.meta.env.VITE_IMAGE_URL || ''}${app.resume.replace(/\\/g, '/')}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline"
@@ -95,14 +112,14 @@ const JobApplicationsPage = () => {
                                         <td className="px-6 py-4 text-slate-500">
                                             {new Date(app.createdAt).toLocaleDateString()}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        {/* <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${app.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
                                                 app.status === 'Accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                                                     'bg-slate-50 text-slate-700 border-slate-200'
                                                 }`}>
                                                 {app.status || "New"}
                                             </span>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 ))
                             )}

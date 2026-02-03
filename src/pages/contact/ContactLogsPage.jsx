@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getContactLogs, deleteContactLog } from "../../store/slices/contactUsSlice";
-import { Mail, Phone, User, Calendar, Eye, Trash2 } from "lucide-react";
+import { Mail, Phone, User, Calendar, Eye, Trash2, Search } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../UI/ConfirmDeleteModal";
 
@@ -11,14 +11,19 @@ const ContactLogsPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedLog, setSelectedLog] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        dispatch(getContactLogs({ page: 1 }));
-    }, [dispatch]);
+        const delayDebounceFn = setTimeout(() => {
+            dispatch(getContactLogs({ page: 1, search: searchTerm }));
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm, dispatch]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= pagination.totalPages) {
-            dispatch(getContactLogs({ page: newPage }));
+            dispatch(getContactLogs({ page: newPage, search: searchTerm }));
         }
     };
 
@@ -39,9 +44,21 @@ const ContactLogsPage = () => {
 
     return (
         <div className="p-6">
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-slate-900">Contact Us Logs</h1>
-                <p className="text-slate-500">View and manage all inquiries received through the contact form.</p>
+            <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Contact Us Logs</h1>
+                    <p className="text-slate-500">View and manage all inquiries received through the contact form.</p>
+                </div>
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                    <input
+                        type="text"
+                        placeholder="Search logs..."
+                        className="pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900/10 w-full md:w-64"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

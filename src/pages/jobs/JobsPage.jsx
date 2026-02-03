@@ -3,7 +3,7 @@ import Section from "../../UI/Section";
 import { useDispatch, useSelector } from "react-redux";
 import { getJobs, deleteJob, createJob, updateJob } from "../../store/slices/jobsSlice";
 import { toast } from "react-toastify";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Search } from "lucide-react";
 
 const JobsPage = () => {
     const dispatch = useDispatch();
@@ -17,10 +17,15 @@ const JobsPage = () => {
         description: "",
         requirements: "",
     });
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        dispatch(getJobs());
-    }, [dispatch]);
+        const delayDebounceFn = setTimeout(() => {
+            dispatch(getJobs({ search: searchTerm }));
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [dispatch, searchTerm]);
 
     const handleReset = () => {
         setFormData({
@@ -71,17 +76,29 @@ const JobsPage = () => {
 
     return (
         <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <h1 className="text-2xl font-bold">Jobs Management</h1>
-                <button
-                    onClick={() => {
-                        handleReset();
-                        setShowModal(true);
-                    }}
-                    className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition"
-                >
-                    <Plus size={20} /> Add New Job
-                </button>
+                <div className="flex w-full md:w-auto gap-4">
+                    <div className="relative flex-1 md:flex-initial">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Search jobs..."
+                            className="pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900/10 w-full md:w-64"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <button
+                        onClick={() => {
+                            handleReset();
+                            setShowModal(true);
+                        }}
+                        className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition whitespace-nowrap"
+                    >
+                        <Plus size={20} /> Add New Job
+                    </button>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">

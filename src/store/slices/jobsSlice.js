@@ -4,9 +4,10 @@ import axios from "../../services/axios";
 // --- Jobs Thunks ---
 export const getJobs = createAsyncThunk(
     "jobs/getJobs",
-    async (_, { rejectWithValue }) => {
+    async ({ search = '' } = {}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/career/jobs`);
+            const query = search ? `?search=${search}` : '';
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/career/jobs${query}`);
             return response.data.data || response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
@@ -53,9 +54,9 @@ export const deleteJob = createAsyncThunk(
 // --- Applications Thunks ---
 export const getJobApplications = createAsyncThunk(
     "jobs/getJobApplications",
-    async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+    async ({ page = 1, limit = 10, search = '' } = {}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/job-application?page=${page}&limit=${limit}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/job-application?page=${page}&limit=${limit}&search=${search}`);
             // The axios interceptor returns response.data, so 'response' here IS the body.
             // If the body has { items: [...] }, it also has pagination metadata, so return the whole object.
             if (response.items) {
