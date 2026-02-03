@@ -81,29 +81,125 @@ const HomePageEditor = () => {
   // Sync Redux with Local State
   useEffect(() => {
     if (sections) {
-      if (sections.heroSection) setHero(sections.heroSection);
-      if (sections.trustedByData) setTrustedBy(sections.trustedByData); // ✅ ADD
-      if (sections.processData) setProcess(sections.processData);
-      if (sections.webFeature) setWebFeature(sections.webFeature);
-      if (sections.services) setServices(sections.services);
-      if (sections.statsFeature) setStatsFeature(sections.statsFeature);
+      if (sections.heroSection) {
+        setHero({
+          title: sections.heroSection.title || "",
+          title2: sections.heroSection.title2 || "",
+          description: sections.heroSection.description || "",
+          buttonText: sections.heroSection.buttonText || "",
+          ctaLink: sections.heroSection.ctaLink || "",
+        });
+      }
+
+      if (sections.trustedByData) {
+        setTrustedBy({
+          badge: sections.trustedByData.badge || "",
+          testimonials: Array.isArray(sections.trustedByData.testimonials)
+            ? sections.trustedByData.testimonials
+            : [],
+        });
+      }
+
+      if (sections.processData) {
+        setProcess({
+          badge: sections.processData.badge || "",
+          title: sections.processData.title || "",
+          title2: sections.processData.title2 || "",
+          cards: (Array.isArray(sections.processData.cards)
+            ? sections.processData.cards
+            : []
+          ).map((c) => ({
+            title: c?.title || "",
+            image: c?.image || "",
+            description: c?.description || "",
+          })),
+        });
+        if (!sections.processData.cards || sections.processData.cards.length === 0) {
+          setProcess((prev) => ({
+            ...prev,
+            cards: [{ title: "", image: "", description: "" }],
+          }));
+        }
+      }
+
+      if (sections.webFeature) {
+        setWebFeature({
+          badge: sections.webFeature.badge || "",
+          title: sections.webFeature.title || "",
+          highlightedText: sections.webFeature.highlightedText || "",
+          imageSrc: sections.webFeature.imageSrc || "",
+          features: (Array.isArray(sections.webFeature.features)
+            ? sections.webFeature.features
+            : []
+          ).map((f) => ({
+            title: typeof f === "string" ? f : f?.title || "",
+            description: f?.description || "",
+          })),
+        });
+        if (!sections.webFeature.features || sections.webFeature.features.length === 0) {
+          setWebFeature((prev) => ({
+            ...prev,
+            features: [{ title: "", description: "" }],
+          }));
+        }
+      }
+
+      if (sections.services) {
+        setServices({
+          badge: sections.services.badge || "",
+          heading: sections.services.heading || "",
+        });
+      }
+
+      if (sections.statsFeature) {
+        setStatsFeature({
+          badge: sections.statsFeature.badge || "",
+          title: sections.statsFeature.title || "",
+          highlightedTitle: sections.statsFeature.highlightedTitle || "",
+          statValue: sections.statsFeature.statValue || "",
+          statDescription: sections.statsFeature.statDescription || "",
+          blogTitle: sections.statsFeature.blogTitle || "",
+          blogSummary: sections.statsFeature.blogSummary || "",
+        });
+      }
+
       if (sections.threePillarsSection) {
+        const pillarsData = Array.isArray(sections.threePillarsSection)
+          ? sections.threePillarsSection
+          : sections.threePillarsSection.pillars || [];
+
         setPillars(
-          sections.threePillarsSection.length
-            ? sections.threePillarsSection
+          pillarsData.length
+            ? pillarsData.map((p) => ({
+              title: p?.title || "",
+              icon: p?.icon || "",
+              description: p?.description || "",
+            }))
             : [{ title: "", icon: "", description: "" }]
         );
       }
+
       if (sections.testimonials) {
         setTestimonials({
           badge: sections.testimonials.badge || "",
           title: sections.testimonials.title || "",
           highlightedTitle: sections.testimonials.highlightedTitle || "",
-          testimonials:
-            sections.testimonials.testimonials?.length
-              ? sections.testimonials.testimonials
-              : [{ text: "" }],
+          testimonials: (Array.isArray(sections.testimonials.testimonials)
+            ? sections.testimonials.testimonials
+            : []
+          ).map((t) => ({
+            text: typeof t === "string" ? t : t?.text || "",
+          })),
         });
+        if (
+          !sections.testimonials.testimonials ||
+          sections.testimonials.testimonials.length === 0
+        ) {
+          setTestimonials((prev) => ({
+            ...prev,
+            testimonials: [{ text: "" }],
+          }));
+        }
       }
     }
   }, [sections]);
@@ -160,16 +256,16 @@ const HomePageEditor = () => {
             <h5 className="font-semibold mt-3">Testimonials / Logos</h5>
 
             {trustedBy.testimonials.map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
+              <div key={i} className="flex items-center gap-2 mb-2">
                 <input
                   type="text"
-                  value={item}
+                  value={item || ""}
                   onChange={(e) => {
                     const arr = [...trustedBy.testimonials];
                     arr[i] = e.target.value;
                     setTrustedBy({ ...trustedBy, testimonials: arr });
                   }}
-                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2"
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                   placeholder="Company name or logo URL"
                 />
                 <button
@@ -179,7 +275,7 @@ const HomePageEditor = () => {
                       testimonials: trustedBy.testimonials.filter((_, idx) => idx !== i),
                     })
                   }
-                  className="text-red-500"
+                  className="text-red-500 hover:text-red-700 transition-colors"
                 >
                   ✕
                 </button>
@@ -406,14 +502,24 @@ const Section = ({ title, children, onSave }) => (
 const Input = ({ label, value, onChange }) => (
   <div>
     <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
-    <input type="text" value={value} onChange={onChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+    <input
+      type="text"
+      value={value || ""}
+      onChange={onChange}
+      className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+    />
   </div>
 );
 
 const Textarea = ({ label, value, onChange }) => (
   <div>
     <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
-    <textarea rows={3} value={value} onChange={onChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+    <textarea
+      rows={3}
+      value={value || ""}
+      onChange={onChange}
+      className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+    />
   </div>
 );
 

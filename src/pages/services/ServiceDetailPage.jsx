@@ -13,7 +13,7 @@ const ServiceDetailPage = () => {
   const navigate = useNavigate();
   const { selectedService, loading } = useSelector((state) => state.Services);
 
-console.log("selectedService", selectedService);
+  console.log("selectedService", selectedService);
 
   useEffect(() => {
     if (serviceId) {
@@ -86,16 +86,16 @@ console.log("selectedService", selectedService);
           </div>
         )}
 
-          {selectedService.excerpt && (
-            <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
-              <p className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
-                Excerpt
-              </p>
-              <p className="mt-2 text-sm text-slate-700 leading-relaxed">
-                {selectedService.excerpt}
-              </p>
-            </div>
-          )}
+        {selectedService.excerpt && (
+          <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
+            <p className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
+              Excerpt
+            </p>
+            <p className="mt-2 text-sm text-slate-700 leading-relaxed">
+              {selectedService.excerpt?.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ")}
+            </p>
+          </div>
+        )}
         <div className="space-y-6 p-6">
           <div className="grid gap-4 md:grid-cols-3">
             {[
@@ -107,7 +107,7 @@ console.log("selectedService", selectedService);
               >
                 <label htmlFor="label" className="font-semibold text-md">{item.label}</label>
                 <p className="mt-1 text-sm text-slate-900 font-medium">
-                  {item.value === false ? "No" : item.value === true ? "Yes" : item.value|| item.value || "N/A"}
+                  {item.value === false ? "No" : item.value === true ? "Yes" : item.value || item.value || "N/A"}
                 </p>
               </div>
             ))}
@@ -120,7 +120,7 @@ console.log("selectedService", selectedService);
 
             <div className="mt-2 space-y-1">
               {Array.isArray(selectedService.points) &&
-              selectedService.points.length > 0 ? (
+                selectedService.points.length > 0 ? (
                 selectedService.points.map((item, idx) => (
                   <div key={idx} className="flex gap-2 text-sm text-slate-900">
                     <span className="text-slate-400">•</span>
@@ -162,7 +162,7 @@ console.log("selectedService", selectedService);
               }}
             />
           </div>
-        
+
         </div>
       </div>
     </div>

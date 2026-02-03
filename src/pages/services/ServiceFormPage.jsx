@@ -122,7 +122,7 @@ const ServiceFormPage = () => {
     const map = {
       Title: "title",
 
-     
+
     };
     return map[name] || name;
   }
@@ -202,14 +202,19 @@ const ServiceFormPage = () => {
     setPreviewImage("");
   };
 
+  const removeNbsp = (str) => {
+    if (!str) return "";
+    return str.replace(/&nbsp;/g, " ");
+  };
+
   const buildPayload = () => {
     const payload = {
       title: form.title?.trim() || "",
-      excerpt: form.excerpt?.trim() || "",
-      pointHeading: form.pointHeading?.trim() || "",
+      excerpt: (form.excerpt || "").trim(),
+      pointHeading: (form.pointHeading || "").trim(),
       icon: form.icon || "",
-      description: form.description || "",
-      descriptionBottom: form.descriptionBottom || "",
+      description: removeNbsp(form.description),
+      descriptionBottom: removeNbsp(form.descriptionBottom),
       points: form.points || [],
     };
 
@@ -286,7 +291,7 @@ const ServiceFormPage = () => {
               { label: "Title", name: "title" },
               { label: "Excerpt", name: "excerpt" },
               { label: "Point Heading", name: "pointHeading" },
-              
+
             ].map((field) => (
               <div key={field.name}>
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -299,10 +304,9 @@ const ServiceFormPage = () => {
                   value={form[field.name] ?? ""}
                   onChange={handleChange}
                   className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm text-slate-900 outline-none transition
-                    ${
-                      errors[field.name]
-                        ? "border-red-400 focus:border-red-500"
-                        : "border-slate-200 focus:border-primary"
+                    ${errors[field.name]
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-slate-200 focus:border-primary"
                     }`}
                 />
                 {errors[field.name] && (
@@ -380,54 +384,53 @@ const ServiceFormPage = () => {
               />
             </div>
           </div>
-      
+
         </div>
 
         <div className="space-y-6">
           <div className="space-y-6">
-           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-               Image
-            </label>
-
-            {previewImage ? (
-              <div className="mt-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3">
-                <div className="relative">
-                  <img
-                    src={`${
-                      import.meta.env.VITE_API_URL_IMAGE
-                    }${previewImage}`}
-                    alt="Preview"
-                    className="h-56 w-full rounded-xl object-cover"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-3 rounded-full bg-red-600 p-2 text-white shadow hover:bg-red-500"
-                    onClick={handleRemoveImage}
-                    title="Remove ServiceImage"
-                  >
-                    <RiDeleteBin5Line size={16} />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <label className="mt-3 flex h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 text-sm text-slate-500 hover:border-slate-300">
-                <span>Click to upload Image</span>
-                <input
-                  type="file"
-                  accept="ServiceImage/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Image
               </label>
-            )}
 
-            {isUploading && (
-              <p className="mt-2 text-sm text-slate-500">
-                Uploading ServiceImage...
-              </p>
-            )}
-          </div>
+              {previewImage ? (
+                <div className="mt-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3">
+                  <div className="relative">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL_IMAGE
+                        }${previewImage}`}
+                      alt="Preview"
+                      className="h-56 w-full rounded-xl object-cover"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-3 rounded-full bg-red-600 p-2 text-white shadow hover:bg-red-500"
+                      onClick={handleRemoveImage}
+                      title="Remove ServiceImage"
+                    >
+                      <RiDeleteBin5Line size={16} />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="mt-3 flex h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 text-sm text-slate-500 hover:border-slate-300">
+                  <span>Click to upload Image</span>
+                  <input
+                    type="file"
+                    accept="ServiceImage/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              )}
+
+              {isUploading && (
+                <p className="mt-2 text-sm text-slate-500">
+                  Uploading ServiceImage...
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -439,8 +442,8 @@ const ServiceFormPage = () => {
               {submitting
                 ? "Saving..."
                 : isEditMode
-                ? "Save Changes"
-                : "Create Service"}
+                  ? "Save Changes"
+                  : "Create Service"}
             </button>
 
             {isDisabled && (
@@ -448,8 +451,8 @@ const ServiceFormPage = () => {
                 {isUploading
                   ? "Please wait ServiceImage is uploading..."
                   : hasErrors
-                  ? "Please fill all required fields to enable Save"
-                  : ""}
+                    ? "Please fill all required fields to enable Save"
+                    : ""}
               </p>
             )}
           </div>

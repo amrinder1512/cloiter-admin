@@ -71,7 +71,7 @@ export const Service = () => {
   };
 
   const handleAddService = async () => {
-    if (!manualService.name || !manualService.slug ) {
+    if (!manualService.name || !manualService.slug) {
       return toast.error("Fill required fields");
     }
 
@@ -80,7 +80,7 @@ export const Service = () => {
       toast.success("Service added");
       setShowAddModal(false);
       setManualService({
- 
+
         title: "",
         excerpt: "",
         description: "",
@@ -202,14 +202,16 @@ export const Service = () => {
                       {Service.title}
                     </td>
 
-                    <td className="px-6 py-4 truncate-2 break-words line-clamp-1">{Service.excerpt}</td>
-                    <td className="px-6 py-4 align-top">
-                      <div
-                        className="line-clamp-1 text-slate-700 text-sm break-words"
-                      >{Service.description}</div>
+                    <td className="px-6 py-4 truncate-2 break-words line-clamp-1">
+                      {Service.excerpt?.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ")}
                     </td>
-      
-                  
+                    <td className="px-6 py-4 align-top">
+                      <div className="line-clamp-1 text-slate-700 text-sm break-words">
+                        {Service.description?.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ")}
+                      </div>
+                    </td>
+
+
 
                     <td className="px-6 py-4 text-left">
                       <div className="flex items-center justify-center gap-2">
