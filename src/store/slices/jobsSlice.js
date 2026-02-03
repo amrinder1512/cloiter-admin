@@ -53,10 +53,15 @@ export const deleteJob = createAsyncThunk(
 // --- Applications Thunks ---
 export const getJobApplications = createAsyncThunk(
     "jobs/getJobApplications",
-    async (_, { rejectWithValue }) => {
+    async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/job-applications`);
-            return response.data.data || response.data;
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/job-application?page=${page}&limit=${limit}`);
+            // The axios interceptor returns response.data, so 'response' here IS the body.
+            // If the body has { items: [...] }, it also has pagination metadata, so return the whole object.
+            if (response.items) {
+                return response;
+            }
+            return response.data || response;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
@@ -68,6 +73,11 @@ const jobsSlice = createSlice({
     initialState: {
         jobs: [],
         applications: [],
+        pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalApplications: 0,
+        },
         loading: false,
         error: null,
     },
@@ -107,7 +117,21 @@ const jobsSlice = createSlice({
             })
             .addCase(getJobApplications.fulfilled, (state, action) => {
                 state.loading = false;
-                state.applications = action.payload;
+                // If payload has items (server-side pagination response)
+                if (action.payload.items) {
+                    state.applications = action.payload.items;
+                    state.pagination = {
+                        currentPage: action.payload.currentPage || 1,
+                        totalPages: action.payload.totalPages || 1,
+                        totalApplications: action.payload.totalApplications || 0,
+                    };
+                } else if (Array.isArray(action.payload)) {
+                    // Fallback for array response
+                    state.applications = action.payload;
+                } else {
+                    // Fallback if structure is unknown but not array
+                    state.applications = [];
+                }
             })
             .addCase(getJobApplications.rejected, (state, action) => {
                 state.loading = false;

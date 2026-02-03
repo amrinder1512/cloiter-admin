@@ -28,10 +28,14 @@ export const updateContactUsPage = createAsyncThunk(
 
 export const getContactLogs = createAsyncThunk(
     "contact/getContactLogs",
-    async (_, { rejectWithValue }) => {
+    async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/contact`);
-            return response.data.data || response.data;
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/contact-us?page=${page}&limit=${limit}`);
+            // If response has items (pagination), return full object
+            if (response.items) {
+                return response;
+            }
+            return response.data || response;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Something went wrong");
         }
@@ -55,6 +59,11 @@ const contactUsSlice = createSlice({
     initialState: {
         contact: null,
         logs: [],
+        pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalContacts: 0,
+        },
         loading: false,
         error: null,
     },
@@ -88,7 +97,20 @@ const contactUsSlice = createSlice({
             })
             .addCase(getContactLogs.fulfilled, (state, action) => {
                 state.loading = false;
-                state.logs = action.payload;
+                // Handle paginated response
+                if (action.payload.items) {
+                    state.logs = action.payload.items;
+                    state.pagination = {
+                        currentPage: action.payload.currentPage || 1,
+                        totalPages: action.payload.totalPages || 1,
+                        totalContacts: action.payload.totalContacts || 0,
+                    };
+                } else if (Array.isArray(action.payload)) {
+                    // Fallback for non-paginated array response
+                    state.logs = action.payload;
+                } else {
+                    state.logs = [];
+                }
             })
             .addCase(getContactLogs.rejected, (state, action) => {
                 state.loading = false;

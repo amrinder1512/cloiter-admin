@@ -5,11 +5,17 @@ import { Mail, Phone, MapPin, Briefcase, FileText } from "lucide-react";
 
 const JobApplicationsPage = () => {
     const dispatch = useDispatch();
-    const { applications, loading } = useSelector((state) => state.jobs);
+    const { applications, loading, pagination } = useSelector((state) => state.jobs);
 
     useEffect(() => {
-        dispatch(getJobApplications());
+        dispatch(getJobApplications({ page: 1 }));
     }, [dispatch]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= pagination.totalPages) {
+            dispatch(getJobApplications({ page: newPage }));
+        }
+    };
 
     return (
         <div className="p-6">
@@ -18,72 +24,115 @@ const JobApplicationsPage = () => {
                 <p className="text-slate-500">View and manage all candidates who applied for jobs.</p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {loading ? (
-                    <div className="col-span-full py-12 text-center text-slate-500">
-                        <div className="animate-spin h-8 w-8 border-4 border-slate-900 border-t-transparent rounded-full mx-auto mb-4"></div>
-                        Loading applications...
-                    </div>
-                ) : applications.length === 0 ? (
-                    <div className="col-span-full py-12 text-center text-slate-500 bg-white rounded-2xl border border-dashed border-slate-300">
-                        No applications received yet.
-                    </div>
-                ) : (
-                    applications.map((app) => (
-                        <div key={app._id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
-                            <div className="flex justify-between items-start mb-4">
-                                <div>
-                                    <h2 className="text-lg font-bold text-slate-900">{app.name}</h2>
-                                    <div className="flex items-center gap-1 text-slate-500 text-sm mt-1">
-                                        <Briefcase size={14} />
-                                        <span>Applied for: <strong>{app.jobTitle || "Developer Role"}</strong></span>
-                                    </div>
-                                </div>
-                                <span className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-emerald-100">
-                                    New
-                                </span>
-                            </div>
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-slate-600">
+                        <thead className="bg-slate-50 text-slate-900 font-semibold border-b border-slate-200">
+                            <tr>
+                                <th className="px-6 py-4">Candidate Name</th>
+                                <th className="px-6 py-4">Job Title</th>
+                                <th className="px-6 py-4">Contact Info</th>
+                                <th className="px-6 py-4">Resume</th>
+                                <th className="px-6 py-4">Applied Date</th>
+                                <th className="px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                                        <div className="animate-spin h-8 w-8 border-4 border-slate-900 border-t-transparent rounded-full mx-auto mb-4"></div>
+                                        Loading applications...
+                                    </td>
+                                </tr>
+                            ) : applications.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                                        No applications received yet.
+                                    </td>
+                                </tr>
+                            ) : (
+                                applications.map((app) => (
+                                    <tr key={app._id} className="hover:bg-slate-50 transition">
+                                        <td className="px-6 py-4 font-medium text-slate-900">
+                                            {app.firstName} {app.lastName}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-2">
+                                                <Briefcase size={16} className="text-slate-400" />
+                                                <span className="truncate max-w-[200px]" title={app.jobId?.title}>
+                                                    {app.jobId?.title || "Unknown Role"}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-col gap-1">
+                                                <div className="flex items-center gap-2">
+                                                    <Mail size={14} className="text-slate-400" />
+                                                    <span className="truncate max-w-[200px]" title={app.email}>{app.email}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Phone size={14} className="text-slate-400" />
+                                                    <span>{app.phone}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {app.resume ? (
+                                                <a
+                                                    href={`${import.meta.env.VITE_IMAGE_URL || ''}/${app.resume.replace(/\\/g, '/')}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline"
+                                                >
+                                                    <FileText size={16} />
+                                                    View
+                                                </a>
+                                            ) : (
+                                                <span className="text-slate-400 italic">No resume</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-slate-500">
+                                            {new Date(app.createdAt).toLocaleDateString()}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${app.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                                app.status === 'Accepted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                                    'bg-slate-50 text-slate-700 border-slate-200'
+                                                }`}>
+                                                {app.status || "New"}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-                            <div className="space-y-3 pt-4 border-t border-slate-100">
-                                <div className="flex items-center gap-3 text-slate-600">
-                                    <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                                        <Mail size={16} />
-                                    </div>
-                                    <span className="text-sm truncate">{app.email}</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-slate-600">
-                                    <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                                        <Phone size={16} />
-                                    </div>
-                                    <span className="text-sm">{app.phone}</span>
-                                </div>
-                                {app.resume && (
-                                    <a
-                                        href={app.resume}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-3 text-blue-600 hover:text-blue-700 transition"
-                                    >
-                                        <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-400">
-                                            <FileText size={16} />
-                                        </div>
-                                        <span className="text-sm font-medium underline">View Resume</span>
-                                    </a>
-                                )}
-                            </div>
-
-                            <div className="mt-6 pt-4 border-t border-slate-100">
-                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Message</h3>
-                                <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
-                                    {app.message || "No cover letter provided."}
-                                </p>
-                            </div>
-
-                            <button className="w-full mt-6 py-2 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition">
-                                View Full Detail
+                {/* Pagination Controls */}
+                {!loading && applications.length > 0 && pagination && (
+                    <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+                        <div className="text-sm text-slate-500">
+                            Showing <span className="font-medium">{(pagination.currentPage - 1) * 10 + 1}</span> to <span className="font-medium">{Math.min(pagination.currentPage * 10, pagination.totalApplications)}</span> of <span className="font-medium">{pagination.totalApplications}</span> results
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                disabled={pagination.currentPage === 1}
+                                className="px-3 py-1 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                disabled={pagination.currentPage === pagination.totalPages}
+                                className="px-3 py-1 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            >
+                                Next
                             </button>
                         </div>
-                    ))
+                    </div>
                 )}
             </div>
         </div>

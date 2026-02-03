@@ -14,7 +14,7 @@ const ContactUsPage = () => {
         heroSection: { title: "", description: "", buttonText: "" },
         formSection: { badge: "", title: "", description: "" },
         points: [],
-        bottomSection: [],
+        bottomSection: { number: "", email: "", address: "" },
     });
 
     useEffect(() => {
@@ -35,7 +35,11 @@ const ContactUsPage = () => {
                     description: contact.formSection?.description || "",
                 },
                 points: Array.isArray(contact.points) ? contact.points : [],
-                bottomSection: Array.isArray(contact.bottomSection) ? contact.bottomSection : [],
+                bottomSection: {
+                    number: contact.bottomSection?.number || "",
+                    email: contact.bottomSection?.email || "",
+                    address: contact.bottomSection?.address || "",
+                },
             });
         }
     }, [contact]);
@@ -69,18 +73,8 @@ const ContactUsPage = () => {
     };
 
     // Bottom Section logic
-    const addBottomItem = () => {
-        setForm(prev => ({ ...prev, bottomSection: [...prev.bottomSection, { number: "", title: "", description: "" }] }));
-    };
-
-    const removeBottomItem = (index) => {
-        setForm(prev => ({ ...prev, bottomSection: prev.bottomSection.filter((_, i) => i !== index) }));
-    };
-
-    const updateBottomItem = (index, field, value) => {
-        const newBottom = [...form.bottomSection];
-        newBottom[index] = { ...newBottom[index], [field]: value };
-        setForm(prev => ({ ...prev, bottomSection: newBottom }));
+    const handleBottomSectionChange = (field, value) => {
+        setForm(prev => ({ ...prev, bottomSection: { ...prev.bottomSection, [field]: value } }));
     };
 
     return (
@@ -162,46 +156,27 @@ const ContactUsPage = () => {
 
                 {/* Bottom Section */}
                 <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl font-bold text-slate-900 leading-none">Bottom Section (Stats/Cards)</h2>
-                        <button onClick={addBottomItem} className="flex items-center gap-2 text-sm font-bold text-white bg-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-800 transition shadow-sm">
-                            <Plus size={16} /> Add Card
-                        </button>
+                    <h2 className="text-xl font-bold text-slate-900 leading-none">Bottom Section (Contact Info)</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <Input
+                            label="Phone Number"
+                            value={form.bottomSection.number || ""}
+                            onChange={(e) => handleBottomSectionChange('number', e.target.value)}
+                            placeholder="e.g. +1 234 567 890"
+                        />
+                        <Input
+                            label="Email Address"
+                            value={form.bottomSection.email || ""}
+                            onChange={(e) => handleBottomSectionChange('email', e.target.value)}
+                            placeholder="e.g. contact@example.com"
+                        />
+                        <Input
+                            label="Location / Address"
+                            value={form.bottomSection.address || ""}
+                            onChange={(e) => handleBottomSectionChange('address', e.target.value)}
+                            placeholder="e.g. 123 Main St, City, Country"
+                        />
                     </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {form.bottomSection.map((item, index) => (
-                            <div key={index} className="relative p-6 border border-slate-200 rounded-2xl bg-white shadow-sm hover:shadow-md transition group">
-                                <button onClick={() => removeBottomItem(index)} className="absolute top-4 right-4 p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100">
-                                    <Trash2 size={20} />
-                                </button>
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                        <div className="md:col-span-1">
-                                            <Input
-                                                label="Number/Icon"
-                                                value={item.number}
-                                                onChange={(e) => updateBottomItem(index, 'number', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="md:col-span-3">
-                                            <Input
-                                                label="Title"
-                                                value={item.title}
-                                                onChange={(e) => updateBottomItem(index, 'title', e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <Input
-                                        label="Description"
-                                        textarea
-                                        value={item.description}
-                                        onChange={(e) => updateBottomItem(index, 'description', e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    {form.bottomSection.length === 0 && <p className="text-sm text-slate-400 italic">No bottom section cards added yet.</p>}
                 </div>
             </div>
         </Section>

@@ -7,14 +7,20 @@ import ConfirmModal from "../../UI/ConfirmDeleteModal";
 
 const ContactLogsPage = () => {
     const dispatch = useDispatch();
-    const { logs, loading } = useSelector((state) => state.contact);
+    const { logs, loading, pagination } = useSelector((state) => state.contact);
     const [showModal, setShowModal] = useState(false);
     const [selectedLog, setSelectedLog] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
 
     useEffect(() => {
-        dispatch(getContactLogs());
+        dispatch(getContactLogs({ page: 1 }));
     }, [dispatch]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= pagination.totalPages) {
+            dispatch(getContactLogs({ page: newPage }));
+        }
+    };
 
     const viewLog = (log) => {
         setSelectedLog(log);
@@ -45,6 +51,7 @@ const ContactLogsPage = () => {
                             <th className="px-6 py-4 text-sm font-semibold text-slate-600">Name</th>
                             <th className="px-6 py-4 text-sm font-semibold text-slate-600">Email</th>
                             <th className="px-6 py-4 text-sm font-semibold text-slate-600">Subject</th>
+                            <th className="px-6 py-4 text-sm font-semibold text-slate-600">Inquiry Type</th>
                             <th className="px-6 py-4 text-sm font-semibold text-slate-600">Date</th>
                             <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-right">Actions</th>
                         </tr>
@@ -52,18 +59,23 @@ const ContactLogsPage = () => {
                     <tbody className="divide-y divide-slate-100">
                         {loading ? (
                             <tr>
-                                <td colSpan="5" className="px-6 py-4 text-center">Loading...</td>
+                                <td colSpan="6" className="px-6 py-4 text-center">Loading...</td>
                             </tr>
                         ) : logs.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="px-6 py-4 text-center text-slate-500">No logs found</td>
+                                <td colSpan="6" className="px-6 py-4 text-center text-slate-500">No logs found</td>
                             </tr>
                         ) : (
                             logs.map((log) => (
                                 <tr key={log._id} className="hover:bg-slate-50 transition">
-                                    <td className="px-6 py-4 font-medium text-slate-900">{log.name}</td>
+                                    <td className="px-6 py-4 font-medium text-slate-900">{log.firstName + " " + log.lastName}</td>
                                     <td className="px-6 py-4 text-slate-600">{log.email}</td>
-                                    <td className="px-6 py-4 text-slate-600">{log.subject || "N/A"}</td>
+                                    <td className="px-6 py-4 text-slate-600 truncate max-w-[150px]">{log.subject || "N/A"}</td>
+                                    <td className="px-6 py-4 text-slate-600">
+                                        <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs font-semibold">
+                                            {log.inquiryType || "General"}
+                                        </span>
+                                    </td>
                                     <td className="px-6 py-4 text-slate-500 text-sm">
                                         {new Date(log.createdAt).toLocaleDateString()}
                                     </td>
@@ -75,12 +87,12 @@ const ContactLogsPage = () => {
                                             >
                                                 <Eye size={18} />
                                             </button>
-                                            <button
+                                            {/* <button
                                                 onClick={() => setDeleteId(log._id)}
                                                 className="text-red-400 hover:text-red-700 transition"
                                             >
                                                 <Trash2 size={18} />
-                                            </button>
+                                            </button> */}
                                         </div>
                                     </td>
                                 </tr>
@@ -88,6 +100,31 @@ const ContactLogsPage = () => {
                         )}
                     </tbody>
                 </table>
+
+                {/* Pagination Controls */}
+                {!loading && logs.length > 0 && pagination && (
+                    <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+                        <div className="text-sm text-slate-500">
+                            Showing <span className="font-medium">{(pagination.currentPage - 1) * 10 + 1}</span> to <span className="font-medium">{Math.min(pagination.currentPage * 10, pagination.totalContacts)}</span> of <span className="font-medium">{pagination.totalContacts}</span> results
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                disabled={pagination.currentPage === 1}
+                                className="px-3 py-1 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                disabled={pagination.currentPage === pagination.totalPages}
+                                className="px-3 py-1 text-sm font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {showModal && selectedLog && (
@@ -119,10 +156,25 @@ const ContactLogsPage = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-1">
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Subject</p>
-                                <p className="text-slate-900 font-medium">{selectedLog.subject || "No Subject"}</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Subject</p>
+                                    <p className="text-slate-900 font-medium">{selectedLog.subject || "No Subject"}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Inquiry Type</p>
+                                    <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-bold inline-block mt-0.5">
+                                        {selectedLog.inquiryType || "General"}
+                                    </span>
+                                </div>
                             </div>
+
+                            {selectedLog.company && (
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Company</p>
+                                    <p className="text-slate-900 font-medium">{selectedLog.company}</p>
+                                </div>
+                            )}
 
                             <div className="space-y-2">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Message</p>
