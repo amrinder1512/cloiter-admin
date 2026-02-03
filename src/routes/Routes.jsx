@@ -20,7 +20,17 @@ import AddFaq from "../pages/helpcenter/AddFaq";
 import EditFaq from "../pages/helpcenter/EditFaq";
 
 import Dashboard from "../pages/dashboard/dashboard";
-
+import AboutPage from "../pages/about/AboutPage";
+import ContactUsPage from "../pages/contact/ContactUsPage";
+import CareersPage from "../pages/careers/CareersPage";
+import JobsPage from "../pages/jobs/JobsPage";
+import JobApplicationsPage from "../pages/jobs/JobApplicationsPage";
+import PrivacyPolicyPage from "../pages/policies/PrivacyPolicyPage";
+import TermsPage from "../pages/policies/TermsPage";
+import ArticleListPage from "../pages/articles/ArticleListPage";
+import ArticleFormPage from "../pages/articles/ArticleFormPage";
+import ContactLogsPage from "../pages/contact/ContactLogsPage";
+// import ArticleCategoryPage from "../pages/articles/ArticleCategoryPage";
 
 const Routes = () => {
   const navigate = useNavigate();
@@ -44,8 +54,6 @@ const Routes = () => {
   return (
     <RouteWrapper>
       <Route element={token ? <Layout /> : <AuthLayout />}>
-
-
         <Route path={ROUTES.HOMEPAGE} element={<HomePage />} />
 
         <Route path={ROUTES.FAQ} element={<Faq />} />
@@ -69,6 +77,17 @@ const Routes = () => {
         <Route path={ROUTES.FOOTER_EDIT_FOR_HEADER_AND_ADDRESS} element={<EditFooterItemPage />} />
         <Route path={ROUTES.HOME} element={<Dashboard />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
+        <Route path={ROUTES.ABOUT} element={<AboutPage />} />
+        <Route path={ROUTES.CONTACT_US} element={<ContactUsPage />} />
+        <Route path={ROUTES.CAREER} element={<CareersPage />} />
+        <Route path={ROUTES.JOBS} element={<JobsPage />} />
+        <Route path={ROUTES.JOB_APPLICATIONS} element={<JobApplicationsPage />} />
+        <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicyPage />} />
+        <Route path={ROUTES.TERM_OF_SERVICE} element={<TermsPage />} />
+        <Route path={ROUTES.ARTICLE} element={<ArticleListPage />} />
+        <Route path={ROUTES.ARTICLE_CREATE} element={<ArticleFormPage />} />
+        <Route path={ROUTES.ARTICLE_EDIT} element={<ArticleFormPage />} />
+        <Route path={ROUTES.CONTACTUS} element={<ContactLogsPage />} />
       </Route>
     </RouteWrapper>
   );

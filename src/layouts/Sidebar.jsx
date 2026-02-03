@@ -18,6 +18,7 @@ import {
   Map,
   MapPin,
   Building,
+  Briefcase,
 } from "lucide-react";
 import { MdOutlineFindInPage } from "react-icons/md";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
@@ -77,55 +78,60 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     //   icon: TbLayoutDashboardFilled,
     //   href: ROUTES.HOME,
     // },
-     {
+
+    {
+      name: "Dynamic Pages",
+      icon: MdOutlineDynamicFeed,
+      isDropdown: true,
+      children: [
+        {
           name: "Homepage",
           href: ROUTES.HOMEPAGE,
           icon: Home,
         },
-    // {
-    //   name: "Dynamic Pages",
-    //   icon: MdOutlineDynamicFeed,
-    //   isDropdown: true,
-    //   children: [
-       
-    //     { name: "About Page", href: ROUTES.ABOUT, icon: Info },
-    //     {
-    //       name: "Article Page",
-    //       href: ROUTES.ARTICLEPAGE,
-    //       icon: MdOutlineArticle,
-    //     },
-    //     {
-    //       name: "Form Page",
-    //       href: ROUTES.FORMPAGE,
-    //       icon: SiReacthookform,
-    //     },
-    //     {
-    //       name: "Partner Page",
-    //       href: ROUTES.PARTNER,
-    //       icon: UserPlus,
-    //     },
-    //     {
-    //       name: "Quotes Section",
-    //       href: ROUTES.QUOTES,
-    //       icon: Quote,
-    //     },
-    //     {
-    //       name: "Faq Page",
-    //       href: ROUTES.FAQPAGE,
-    //       icon: FaQ,
-    //     },
-    //     {
-    //       name: "Real Estate Agents",
-    //       href: ROUTES.REAL_ESTATE_AGENTS,
-    //       icon: MdOutlineRealEstateAgent,
-    //     },
-    //     {
-    //       name: "Footer",
-    //       icon: MdOutlineFindInPage,
-    //       href: ROUTES.FOOTER,
-    //     },
-    //   ],
-    // },
+        { name: "About Page", href: ROUTES.ABOUT, icon: Info },
+        { name: "Contact us Page", href: ROUTES.CONTACT_US, icon: MdOutlineContactSupport },
+        // { name: "Career Page", href: ROUTES.CAREER, icon: Briefcase },
+        { name: "Privacy Policy", href: ROUTES.PRIVACY_POLICY, icon: ShieldCheck },
+        { name: "Term of Service", href: ROUTES.TERM_OF_SERVICE, icon: FileCheck2 },
+
+        // {
+        //   name: "Article Page",
+        //   href: ROUTES.ARTICLEPAGE,
+        //   icon: MdOutlineArticle,
+        // },
+        // {
+        //   name: "Form Page",
+        //   href: ROUTES.FORMPAGE,
+        //   icon: SiReacthookform,
+        // },
+        // {
+        //   name: "Partner Page",
+        //   href: ROUTES.PARTNER,
+        //   icon: UserPlus,
+        // },
+        // {
+        //   name: "Quotes Section",
+        //   href: ROUTES.QUOTES,
+        //   icon: Quote,
+        // },
+        // {
+        //   name: "Faq Page",
+        //   href: ROUTES.FAQPAGE,
+        //   icon: FaQ,
+        // },
+        // {
+        //   name: "Real Estate Agents",
+        //   href: ROUTES.REAL_ESTATE_AGENTS,
+        //   icon: MdOutlineRealEstateAgent,
+        // },
+        // {
+        //   name: "Footer",
+        //   icon: MdOutlineFindInPage,
+        //   href: ROUTES.FOOTER,
+        // },
+      ],
+    },
     // {
     //   name: "Forms",
     //   icon: FileSpreadsheet,
@@ -141,6 +147,21 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     //   icon: TbLogs,
     //   href: ROUTES.LEAD_LOGS,
     // },
+    {
+      name: "Job Openings",
+      icon: Briefcase,
+      href: ROUTES.JOBS,
+    },
+    {
+      name: "Job Applications",
+      icon: UsersRound,
+      href: ROUTES.JOB_APPLICATIONS,
+    },
+    {
+      name: "Blogs",
+      icon: BookOpenText,
+      href: ROUTES.ARTICLE,
+    },
     {
       name: "FAQ's",
       icon: HelpCircle,
@@ -176,22 +197,13 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
     //   icon: Mail,
     //   href: ROUTES.EMAIL_TEMPLATES,
     // },
-    // {
-    //   name: "Term of Service",
-    //   icon: FileCheck2,
-    //   href: ROUTES.TERM_OF_SERVICE,
-    // },
-    // {
-    //   name: "Privacy Policy",
-    //   icon: ShieldCheck,
-    //   href: ROUTES.PRIVACY_POLICY,
-    // },
 
-    // {
-    //   name: "Contact Us Logs",
-    //   icon: MdOutlineContactSupport,
-    //   href: ROUTES.CONTACTUS,
-    // },
+
+    {
+      name: "Contact Us Logs",
+      icon: MdOutlineContactSupport,
+      href: ROUTES.CONTACTUS,
+    },
     {
       name: "Settings",
       icon: Settings,
@@ -205,25 +217,23 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
   return (
     <>
       <div
-        className={`${
-          isMiniSidebarOpen ? "bg-black/40 w-full h-full fixed inset-0 z-30" : ""
-        } md:hidden`}
+        className={`${isMiniSidebarOpen ? "bg-black/40 w-full h-full fixed inset-0 z-30" : ""
+          } md:hidden`}
         onClick={onCloseSidebar}
       />
 
       <div
-        className={`fixed inset-y-0 left-0 z-40 flex h-screen flex-col border-r border-slate-100 bg-white/95 backdrop-blur-md transition-all duration-300 dark:border-blue-900 dark:bg-blue-950/95 ${
-          isMiniSidebarOpen ? "w-[280px]" : "w-[88px]"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 flex h-screen flex-col border-r border-slate-100 bg-white/95 backdrop-blur-md transition-all duration-300 dark:border-blue-900 dark:bg-blue-950/95 ${isMiniSidebarOpen ? "w-[280px]" : "w-[88px]"
+          }`}
       >
         <div className="flex items-center justify-between px-4 py-5">
           {isMiniSidebarOpen && (
             <Link to="/dashboard" className="flex items-center gap-2">
-                <img
-                  src= "/images/logo.png"
-                  alt="Logo Dark"
-                  className="h-12 w-auto object-contain"
-                />
+              <img
+                src="/images/logo.png"
+                alt="Logo Dark"
+                className="h-12 w-auto object-contain"
+              />
 
             </Link>
           )}
@@ -232,9 +242,8 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
             className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
           >
             <HiChevronDoubleLeft
-              className={`text-xl transition ${
-                isMiniSidebarOpen ? "" : "rotate-180"
-              }`}
+              className={`text-xl transition ${isMiniSidebarOpen ? "" : "rotate-180"
+                }`}
             />
           </button>
         </div>
@@ -252,9 +261,8 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                   return (
                     <li key={index}>
                       <button
-                        className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition text-slate-600 hover:bg-slate-100 ${
-                          isMiniSidebarOpen ? "justify-between" : "justify-center"
-                        }`}
+                        className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition text-slate-600 hover:bg-slate-100 ${isMiniSidebarOpen ? "justify-between" : "justify-center"
+                          }`}
                         onClick={() =>
                           setOpenDropdown(isOpen ? null : item.name)
                         }
@@ -280,19 +288,17 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                             <li key={i}>
                               <button
                                 onClick={() => navigate(child.href)}
-                                className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm transition ${
-                                  location.pathname === child.href
-                                    ? "bg-slate-900 text-white"
-                                    : "text-slate-600 hover:bg-slate-100"
-                                }`}
+                                className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm transition ${location.pathname === child.href
+                                  ? "bg-slate-900 text-white"
+                                  : "text-slate-600 hover:bg-slate-100"
+                                  }`}
                               >
                                 {child.icon && (
                                   <span
-                                    className={`flex h-6 w-6 items-center justify-center ${
-                                      location.pathname === child.href
-                                        ? "text-white"
-                                        : "text-slate-500"
-                                    }`}
+                                    className={`flex h-6 w-6 items-center justify-center ${location.pathname === child.href
+                                      ? "text-white"
+                                      : "text-slate-500"
+                                      }`}
                                   >
                                     <child.icon size={18} />
                                   </span>
@@ -315,16 +321,14 @@ const SideBar = ({ toggleSidebar, isMiniSidebarOpen, onCloseSidebar }) => {
                         navigate(item.href);
                         onCloseSidebar();
                       }}
-                      className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition ${
-                        isActive
-                          ? "bg-[#434242] text-white shadow-lg shadow-slate-900/10"
-                          : "text-slate-600 hover:bg-slate-100"
-                      } ${isMiniSidebarOpen ? "" : "justify-center"}`}
+                      className={`relative flex w-full items-center gap-1 rounded-xl px-2 py-2 text-sm font-semibold transition ${isActive
+                        ? "bg-[#434242] text-white shadow-lg shadow-slate-900/10"
+                        : "text-slate-600 hover:bg-slate-100"
+                        } ${isMiniSidebarOpen ? "" : "justify-center"}`}
                     >
                       <span
-                        className={`flex h-6 w-6 items-center justify-center ${
-                          isActive ? "text-white" : "text-slate-500"
-                        }`}
+                        className={`flex h-6 w-6 items-center justify-center ${isActive ? "text-white" : "text-slate-500"
+                          }`}
                       >
                         <item.icon size={18} />
                       </span>

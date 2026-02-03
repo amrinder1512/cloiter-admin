@@ -8,17 +8,15 @@ export const ROUTES = {
   HELP_CENTER: "/helpcenter",
   FORMS: "/forms",
   FAQ: "/faqs",
-  ARTICLEPAGE:"/article-page",
-  FORMPAGE:"/form-page",
+  ARTICLEPAGE: "/article-page",
+  FORMPAGE: "/form-page",
   ABOUT: "/about",
+  CONTACT_US: "/contact-page",
   ARTICLE: "/articles",
   ARTICLE_CREATE: "/articles/create",
   ARTICLE_VIEW: "/articles/:articleId",
   ARTICLE_EDIT: "/articles/:articleId/edit",
-  ARTICLE_CATEGORY_CREATE: "/article-category/create",
-  ARTICLE_CATEGORY: "/article-categories",
-  ARTICLE_CATEGORY_VIEW: "/article-category/:categoryId",
-  ARTICLE_CATEGORY_EDIT: "/article-category/:categoryId/edit",
+  ARTICLE_EDIT: "/articles/:articleId/edit",
   HOMEPAGE: "/homepage",
   PARTNER: "/partner",
   TERM_OF_SERVICE: "/term-of-service",
@@ -28,7 +26,6 @@ export const ROUTES = {
   COUNTY_CREATE: "/county/create",
   COUNTY_VIEW: "/county/:countyId",
   COUNTY_EDIT: "/county/:countyId/Edit",
-
 
   CITIES: "/counties",
   PLACES: "/places",
@@ -45,27 +42,27 @@ export const ROUTES = {
   FOOTER_VIEW: "footer/create/articles/select",
   FOOTER_EDIT: "footer/edit/:tab/:index",
   FOOTER_EDIT_FOR_HEADER_AND_ADDRESS: "footer/edit/:tab/",
-  
 
-  FAQPAGE :"/faq-page",
+  FAQPAGE: "/faq-page",
 
-
-  COUNTIES: "/counties",
   QUOTES: "/quotes",
   REAL_ESTATE_AGENTS: "/real-estate-agents",
-  REAL_ESTATE_AGENTS_EDIT: "/real-estate-agent/:agentId/edit",
   REAL_ESTATE_AGENTS_EDIT: "/real-estate-agent/:id/edit",
 
-  SITEMAP:"/sitemap",
-  CONTACTUS:"/contact",
-  CONTACTUS_VIEW :"/contact/:id",
+  SITEMAP: "/sitemap",
+  CONTACTUS: "/contact",
+  CONTACTUS_VIEW: "/contact/:id",
 
-  COUNTIES: "/counties",
-  QUOTES: "/quotes",
+  CAREER: "/career-page",
+  JOBS: "/jobs",
+  JOBS_CREATE: "/jobs/create",
+  JOBS_EDIT: "/jobs/:id/edit",
+  JOB_APPLICATIONS: "/job-applications",
+
   PARTNERS: "/partners",
   PARTNER_CREATE: "/partners/create",
   PARTNERS_ID: "/partners/:id",
   PARTNERS_EDIT_ID: "/partners/:id/edit",
 
-  LEAD_LOGS :"/lead-logs"
+  LEAD_LOGS: "/lead-logs",
 };
