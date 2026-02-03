@@ -237,12 +237,12 @@ const HomePageEditor = () => {
                 <div className="flex-1 space-y-2">
                   <Input label="Point Title" value={feat.title} onChange={(e) => {
                     const arr = [...webFeature.features];
-                    arr[i].title = e.target.value;
+                    arr[i] = { ...arr[i], title: e.target.value };
                     setWebFeature({ ...webFeature, features: arr });
                   }} />
                   <Textarea label="Point Description" value={feat.description} onChange={(e) => {
                     const arr = [...webFeature.features];
-                    arr[i].description = e.target.value;
+                    arr[i] = { ...arr[i], description: e.target.value };
                     setWebFeature({ ...webFeature, features: arr });
                   }} />
                 </div>
@@ -265,7 +265,7 @@ const HomePageEditor = () => {
                     value={p.title}
                     onChange={(e) => {
                       const arr = [...pillars];
-                      arr[i].title = e.target.value;
+                      arr[i] = { ...arr[i], title: e.target.value };
                       setPillars(arr);
                     }}
                   />
@@ -274,7 +274,7 @@ const HomePageEditor = () => {
                     value={p.icon}
                     onChange={(e) => {
                       const arr = [...pillars];
-                      arr[i].icon = e.target.value;
+                      arr[i] = { ...arr[i], icon: e.target.value };
                       setPillars(arr);
                     }}
                   />
@@ -283,7 +283,7 @@ const HomePageEditor = () => {
                     value={p.description}
                     onChange={(e) => {
                       const arr = [...pillars];
-                      arr[i].description = e.target.value;
+                      arr[i] = { ...arr[i], description: e.target.value };
                       setPillars(arr);
                     }}
                   />
@@ -326,16 +326,17 @@ const HomePageEditor = () => {
               }
             />
 
-            <h5 className="font-semibold mt-4">Testimonials</h5>
+            <h5 className="font-semibold mt-4 w-full">Testimonials</h5>
 
             {testimonials.testimonials.map((t, i) => (
               <div key={i} className="flex items-start gap-2">
                 <Textarea
                   label={`Testimonial #${i + 1}`}
                   value={t.text}
+                  className="flex-1"
                   onChange={(e) => {
                     const arr = [...testimonials.testimonials];
-                    arr[i].text = e.target.value;
+                    arr[i] = { ...arr[i], text: e.target.value };
                     setTestimonials({ ...testimonials, testimonials: arr });
                   }}
                 />
